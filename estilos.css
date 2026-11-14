@@ -46,5 +46,18 @@ th{background:#eaf0f5;color:var(--azul)}
 .entidad strong{color:var(--azul);border-bottom:1px solid var(--borde);padding-bottom:5px;margin-bottom:5px}
 .flecha{font-weight:bold;color:var(--azul2);font-size:13px}
 footer{padding:20px 0 35px;color:var(--gris);font-size:12px;border-top:1px solid var(--borde);margin-top:25px}
-@media(max-width:800px){.tarjetas{grid-template-columns:repeat(2,1fr)}.parametros{grid-template-columns:repeat(2,1fr)}}
+.panel-interno{background:#fbfcfd;border:1px solid var(--borde);border-radius:6px;padding:14px;margin:10px 0;min-width:0}
+.panel-interno h3,.panel-interno h4{margin-top:0}
+.subpanel{border-left:4px solid var(--azul2);background:#fcfdff}
+.tabla-scroll{max-height:430px;overflow:auto}
+.tabla-scroll thead th{position:sticky;top:0;z-index:1}
+.badge{display:inline-block;font-size:12px;padding:3px 8px;border-radius:12px;font-weight:bold;background:#e8edf2;color:var(--azul)}
+.badge.ok{background:#e3f2ea;color:var(--verde)}
+.badge.error{background:#fbe7e7;color:#9b2226}
+.historial-item{border:1px solid var(--borde);border-radius:6px;padding:10px;margin:8px 0;background:#fff}
+.historial-item .boton{margin:6px 6px 0 0;padding:7px 11px;font-size:12px}
+.mal-condicionado{border-left:4px solid #b5651d;background:#fff8f0}
+.resultado table{margin:0}
+.resultado h4{margin-top:0}
+@media(max-width:800px){.tarjetas{grid-template-columns:repeat(2,1fr)}.parametros{grid-template-columns:repeat(2,1fr)}.rejilla.dos{grid-template-columns:1fr}}
 @media(max-width:520px){.tarjetas,.parametros,.rejilla.dos{grid-template-columns:1fr}.integrantes{columns:1}.titulo-seccion{align-items:flex-start;flex-direction:column}.encabezado h1{font-size:31px}}
