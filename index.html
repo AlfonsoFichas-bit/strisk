@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SIMTELE-RISK | Semana 1</title>
+  <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="contenedor">
+      <p class="etiqueta">PROYECTO FINAL · MÉTODOS NUMÉRICOS</p>
+      <h1>SIMTELE-RISK</h1>
+      <p class="subtitulo">Sistema de simulación y análisis numérico de riesgos en transporte por cable</p>
+      <p class="aviso">Modelo educativo con datos sintéticos. No está conectado a equipos reales de Mi Teleférico.</p>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <section class="panel">
+      <h2>Integrantes</h2>
+      <ol class="integrantes">
+        <li>Choque Sillo Ronald</li>
+        <li>Limachi Mamani Ronal</li>
+        <li>Quispe Chino Jose Luis</li>
+        <li>Velasquez Gonzales Juan Pablo</li>
+      </ol>
+    </section>
+
+    <section>
+      <div class="titulo-seccion">
+        <div><p class="etiqueta">PANEL PRINCIPAL</p><h2>Cuatro casos de estudio</h2></div>
+        <span class="estado">Semana 1 · Prototipo</span>
+      </div>
+      <div class="tarjetas">
+        <button class="tarjeta activa" data-modulo="detencion"><span class="numero">01</span><strong>Detención de emergencia</strong><small>Velocidad, frenado y distancia</small></button>
+        <button class="tarjeta" data-modulo="deterioro"><span class="numero">02</span><strong>Deterioro mecánico</strong><small>Indicador y umbral de inspección</small></button>
+        <button class="tarjeta" data-modulo="oscilaciones"><span class="numero">03</span><strong>Oscilaciones por viento</strong><small>Movimiento y amortiguamiento</small></button>
+        <button class="tarjeta" data-modulo="sensores"><span class="numero">04</span><strong>Reconstrucción de sensores</strong><small>Datos faltantes y reconstrucción</small></button>
+      </div>
+    </section>
+
+    <section class="panel modulo" id="modulo-detencion">
+      <div class="titulo-seccion"><div><p class="etiqueta">MÓDULO 1</p><h2>Detención de emergencia de cabinas</h2></div><span class="estado">Modelo planteado</span></div>
+      <p>Se estudia el tiempo y la distancia necesarios para detener una cabina ante un frenado de emergencia, usando desaceleración constante como referencia analítica.</p>
+      <div class="formula">dx/dt = v &nbsp;&nbsp; dv/dt = −a</div>
+      <div class="formula">v(t) = v₀ − at &nbsp;&nbsp; x(t) = x₀ + v₀t − (a/2)t²</div>
+      <div class="formula">t_det = v₀/a &nbsp;&nbsp; d = v₀²/(2a)</div>
+      <div class="rejilla parametros">
+        <label>Posición inicial x₀ (m)<input id="det-x0" type="number" value="0" step="any"></label>
+        <label>Velocidad inicial v₀ (m/s)<input id="det-v0" type="number" value="10" min="0" step="any"></label>
+        <label>Desaceleración a (m/s²)<input id="det-a" type="number" value="1.5" min="0.000001" step="any"></label>
+      </div>
+      <button class="boton" id="calcular-detencion">Calcular referencia analítica</button>
+      <div class="resultado" id="resultado-detencion">Introduce los parámetros y calcula.</div>
+      <h3>Relación entre métodos y el caso</h3>
+      <ul><li>EDO: Runge-Kutta de segundo y cuarto orden (RK2 y RK4).</li><li>Integración: trapecio compuesto, Simpson 1/3 compuesto y Romberg.</li><li>Raíces: bisección, Newton-Raphson y secante para v(t) = 0, cuando corresponda.</li></ul>
+      <p class="nota">Semana 1: modelo, variables, unidades, hipótesis y escenarios. La implementación de EDO, integración y raíces corresponde al avance posterior.</p>
+      <h3>Escenarios definidos</h3>
+      <div class="tabla-contenedor"><table><thead><tr><th>Escenario</th><th>Parámetros propuestos</th><th>Propósito</th></tr></thead><tbody>
+        <tr><td>NORMAL</td><td>v₀ = 10 m/s; a = 1.5 m/s²</td><td>Condición nominal.</td></tr>
+        <tr><td>ESTRÉS</td><td>v₀ = 14 m/s; a = 1.0 m/s²</td><td>Mayor velocidad y menor desaceleración.</td></tr>
+        <tr><td>MAL CONDICIONADO</td><td>Prueba numérica con raíz sensible o derivada pequeña, separada del riesgo físico.</td><td>Estudiar sensibilidad de la solución.</td></tr>
+      </tbody></table></div>
+    </section>
+
+    <section class="panel modulo oculto" id="modulo-deterioro">
+      <div class="titulo-seccion"><div><p class="etiqueta">MÓDULO 2</p><h2>Deterioro mecánico y mantenimiento</h2></div><span class="estado">Tres escenarios ejecutables</span></div>
+      <p>Se estima cuándo un indicador hipotético de deterioro alcanza un umbral de inspección.</p>
+      <div class="formula">D(t) = D₀ + αt + βt²</div>
+      <div class="formula">D(t) − D_umbral = 0</div>
+      <label class="campo-ancho">Escenario
+        <select id="escenario-deterioro">
+          <option value="normal">NORMAL</option><option value="estres">ESTRÉS</option><option value="mal">MAL CONDICIONADO</option>
+        </select>
+      </label>
+      <div class="rejilla parametros">
+        <label>D₀ (índice)<input id="der-d0" type="number" step="any"></label>
+        <label>α (índice/día)<input id="der-alpha" type="number" step="any"></label>
+        <label>β (índice/día²)<input id="der-beta" type="number" step="any"></label>
+        <label>Umbral (índice)<input id="der-umbral" type="number" step="any"></label>
+      </div>
+      <button class="boton" id="calcular-deterioro">Ejecutar escenario</button>
+      <div class="resultado" id="resultado-deterioro">Selecciona un escenario.</div>
+      <h3>Relación entre métodos y el caso</h3>
+      <ul><li>Raíces: bisección, Newton-Raphson y secante para D(t) − D_umbral = 0.</li><li>Sistemas lineales: Jacobi, Gauss-Seidel, LU y gradiente conjugado para estimar coeficientes de calibración, si se construye ese ajuste.</li><li>Integración de la tasa de deterioro: opcional.</li></ul>
+      <p class="nota">Los parámetros son sintéticos y sirven únicamente para la práctica académica.</p>
+      <h3>Definición de escenarios de los otros módulos</h3>
+      <p><strong>Módulo 1:</strong> NORMAL (v₀=10, a=1.5); ESTRÉS (v₀=14, a=1.0); MAL CONDICIONADO: experimento numérico de raíz con alta sensibilidad.</p>
+      <p><strong>Módulo 3:</strong> NORMAL (m=1000, c=500, k=20000, F(t)=1000sen(2t)); ESTRÉS (mayor fuerza externa o menor amortiguamiento); MAL CONDICIONADO: parámetros perturbados que demuestren sensibilidad numérica.</p>
+      <p><strong>Módulo 4:</strong> NORMAL (y=sen(t), nodos regulares); ESTRÉS (datos con ruido); MAL CONDICIONADO (nodos desfavorables o muy próximos que amplifiquen perturbaciones).</p>
+    </section>
+
+    <section class="panel modulo oculto" id="modulo-oscilaciones">
+      <div class="titulo-seccion"><div><p class="etiqueta">MÓDULO 3</p><h2>Oscilaciones por viento</h2></div><span class="estado">Modelo planteado</span></div>
+      <p>Se estudia el desplazamiento de una cabina idealizada sometida a una fuerza externa y a un amortiguamiento.</p>
+      <div class="formula">x′ = v &nbsp;&nbsp; v′ = [F(t) − cv − kx]/m</div>
+      <div class="rejilla parametros">
+        <label>Masa m (kg)<input type="number" value="1000" disabled></label>
+        <label>Amortiguamiento c (N·s/m)<input type="number" value="500" disabled></label>
+        <label>Rigidez k (N/m)<input type="number" value="20000" disabled></label>
+        <label>Fuerza F(t)<input type="text" value="1000 sen(2t) N" disabled></label>
+        <label>Posición inicial x₀ (m)<input type="number" value="0.05" disabled></label>
+        <label>Velocidad inicial v₀ (m/s)<input type="number" value="0" disabled></label>
+      </div>
+      <h3>Relación entre métodos y el caso</h3>
+      <ul><li>EDO: RK2 y RK4.</li><li>Integración de |x(t)| o x(t)²: trapecio, Simpson y Romberg.</li><li>Sistemas lineales auxiliares para calibración, si corresponde.</li></ul>
+      <h3>Escenarios definidos</h3>
+      <div class="tabla-contenedor"><table><thead><tr><th>Escenario</th><th>Definición</th></tr></thead><tbody><tr><td>NORMAL</td><td>m=1000 kg, c=500 N·s/m, k=20000 N/m, F(t)=1000 sen(2t) N.</td></tr><tr><td>ESTRÉS</td><td>Mayor fuerza externa o menor amortiguamiento, manteniendo unidades.</td></tr><tr><td>MAL CONDICIONADO</td><td>Subexperimento numérico con parámetros cuya perturbación cambie significativamente el resultado.</td></tr></tbody></table></div>
+      <p class="nota">Los valores se declaran como supuestos sintéticos; no representan especificaciones reales de una cabina.</p>
+    </section>
+
+    <section class="panel modulo oculto" id="modulo-sensores">
+      <div class="titulo-seccion"><div><p class="etiqueta">MÓDULO 4</p><h2>Reconstrucción de señales de sensores</h2></div><span class="estado">Modelo planteado</span></div>
+      <p>Se reconstruyen datos faltantes a partir de una función sintética conocida y se mide la diferencia entre los valores reconstruidos y los valores de referencia ocultados.</p>
+      <div class="formula">y(t) = sen(t)</div>
+      <p><strong>Intervalo:</strong> [0, 2]. <strong>Nodos:</strong> 0; 0.5; 1; 1.5; 2.</p>
+      <p><strong>Puntos de prueba ocultados:</strong> 0.25; 0.75; 1.25; 1.75.</p>
+      <div class="tabla-contenedor"><table><thead><tr><th>t</th><th>Referencia sen(t)</th><th>Uso</th></tr></thead><tbody id="tabla-sensores"></tbody></table></div>
+      <h3>Relación entre métodos y el caso</h3>
+      <ul><li>Interpolación de Lagrange.</li><li>Newton por diferencias divididas.</li><li>Splines cúbicos.</li><li>Sistemas lineales auxiliares para construir splines, cuando corresponda.</li></ul>
+      <h3>Escenarios definidos</h3>
+      <ul><li><strong>NORMAL:</strong> nodos regulares y datos sintéticos sin ruido.</li><li><strong>ESTRÉS:</strong> datos con perturbaciones o ruido mayor.</li><li><strong>MAL CONDICIONADO:</strong> nodos desfavorables o cercanos que generen alta sensibilidad de la interpolación.</li></ul>
+      <p class="nota">Los métodos de interpolación se implementarán en la etapa correspondiente del cronograma.</p>
+    </section>
+
+    <section class="panel">
+      <p class="etiqueta">PARTE TRANSVERSAL · SEMANA 1</p>
+      <h2>Teoría de errores</h2>
+      <div class="rejilla dos">
+        <div><h3>Error absoluto</h3><div class="formula">Ea = |Vr − Va|</div></div>
+        <div><h3>Error relativo</h3><div class="formula">Er = |Vr − Va| / |Vr|</div></div>
+        <div><h3>Error porcentual</h3><div class="formula">Ep = Er × 100</div></div>
+        <div><h3>Residual lineal</h3><div class="formula">r = b − Ax</div></div>
+      </div>
+      <p>El error relativo y porcentual no se calculan cuando la referencia es cero. Se debe evitar la división por cero y explicar la métrica alternativa utilizada. La sensibilidad se estudia perturbando parámetros o datos y comparando la variación de resultados.</p>
+      <div class="rejilla parametros">
+        <label>Valor de referencia<input id="error-ref" type="number" value="12.3607" step="any"></label>
+        <label>Valor aproximado<input id="error-aprox" type="number" value="12.36" step="any"></label>
+      </div>
+      <button class="boton" id="calcular-error">Calcular errores</button>
+      <div class="resultado" id="resultado-error"></div>
+    </section>
+
+    <section class="panel">
+      <p class="etiqueta">ALGORITMOS OBLIGATORIOS · SEMANA 1</p>
+      <h2>Sistemas de ecuaciones lineales</h2>
+      <p>Se utiliza un sistema de tamaño 4 × 4, con solución conocida. La matriz es simétrica y estrictamente diagonal dominante, por tanto es adecuada para el gradiente conjugado estándar.</p>
+      <div class="formula">A = [[10,−1,2,0], [−1,11,−1,3], [2,−1,10,−1], [0,3,−1,8]]</div>
+      <div class="formula">b = [14, 30, 26, 35]ᵀ &nbsp;&nbsp; x* = [1, 2, 3, 4]ᵀ</div>
+      <div class="rejilla parametros">
+        <label>Tolerancia<input id="tolerancia" type="number" value="0.000001" min="0.0000000001" step="any"></label>
+        <label>Máximo de iteraciones<input id="max-iter" type="number" value="100" min="1" step="1"></label>
+      </div>
+      <button class="boton" id="resolver-sistemas">Ejecutar Jacobi, Gauss-Seidel, LU y gradiente conjugado</button>
+      <div class="tabla-contenedor">
+        <table><thead><tr><th>Método</th><th>x₁</th><th>x₂</th><th>x₃</th><th>x₄</th><th>Iter.</th><th>Residual ∞</th><th>Error abs. máx.</th><th>Estado</th></tr></thead><tbody id="tabla-sistemas"><tr><td colspan="9">Presiona el botón para ejecutar los métodos.</td></tr></tbody></table>
+      </div>
+      <h3>Referencia y método directo LU</h3>
+      <p>La solución de referencia es x* = (1, 2, 3, 4). LU realiza una factorización y resolución directa; Jacobi, Gauss-Seidel y gradiente conjugado son iterativos.</p>
+      <p class="nota">El gradiente conjugado estándar requiere matriz simétrica definida positiva. No se debe utilizar con matrices que no cumplan esa condición.</p>
+    </section>
+
+    <section class="panel">
+      <p class="etiqueta">DISEÑO DE DATOS</p>
+      <h2>DER inicial</h2>
+      <div class="der">
+        <div class="entidad"><strong>CASO_ESTUDIO</strong><span>PK id</span><span>nombre</span><span>modelo_version</span></div>
+        <div class="flecha">1 ─── N</div>
+        <div class="entidad"><strong>ESCENARIO</strong><span>PK id</span><span>FK caso_id</span><span>tipo</span><span>parametros_json</span><span>fuente_datos</span></div>
+        <div class="flecha">1 ─── N</div>
+        <div class="entidad"><strong>SIMULACION</strong><span>PK id</span><span>FK escenario_id</span><span>fecha, estado</span></div>
+        <div class="flecha">1 ─── N</div>
+        <div class="entidad"><strong>EJECUCION_METODO</strong><span>PK id</span><span>FK simulacion_id</span><span>metodo, tolerancia</span><span>paso, max_iter, convergio</span></div>
+        <div class="flecha">1 ─── N</div>
+        <div class="entidad"><strong>ITERACION_RESULTADO</strong><span>PK id</span><span>FK ejecucion_id</span><span>numero, aproximacion_json</span><span>residual, error_abs, error_rel</span></div>
+        <div class="flecha">1 ─── 1</div>
+        <div class="entidad"><strong>RESULTADO_RESUMEN</strong><span>PK id</span><span>FK ejecucion_id</span><span>referencia, valor_json</span><span>metrica_error_json, interpretacion</span></div>
+      </div>
+      <p class="nota">DER inicial basado en las seis entidades mínimas sugeridas en la consigna. La persistencia completa en base de datos y la recuperación tras reiniciar se desarrollan en la etapa posterior.</p>
+    </section>
+
+    <section class="panel">
+      <p class="etiqueta">HISTORIAL DE PRUEBAS</p>
+      <h2>Registro local de demostración</h2>
+      <p>Los resultados del botón de deterioro pueden guardarse en el almacenamiento local del navegador para revisar esta demostración. Esto no sustituye la base de datos requerida en el proyecto final.</p>
+      <button class="boton secundario" id="guardar-historial">Guardar último resultado de deterioro</button>
+      <div id="historial" class="resultado">Todavía no hay registros guardados.</div>
+    </section>
+
+    <footer>
+      <p><strong>SIMTELE-RISK</strong> · Semana 1 · Métodos Numéricos</p>
+      <p>Participantes: Choque Sillo Ronald · Limachi Mamani Ronal · Quispe Chino Jose Luis · Velasquez Gonzales Juan Pablo</p>
+      <p>Todos los parámetros de simulación son supuestos académicos y no describen fallas reales.</p>
+    </footer>
+  </main>
+  <script src="principal.js"></script>
+</body>
+</html>
