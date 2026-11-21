@@ -1,0 +1,8 @@
+{
+  "$schema": "https://www.unpkg.com/wrangler/config-schema.json",
+  "name": "simtele-risk",
+  "compatibility_date": "2024-11-01",
+  "assets": {
+    "directory": "./public"
+  }
+}

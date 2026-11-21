@@ -136,10 +136,39 @@ Resultado verificado:
 
 ---
 
+## Despliegue en la Nube con Cloudflare Wrangler y Deno
+
+Siguiendo la guía oficial de [Deno: Cloudflare Workers with Wrangler](https://docs.deno.com/examples/cloudflare_workers_wrangler_tutorial/), el proyecto incluye integración directa con **Wrangler** ejecutado de forma transparente por Deno (sin dependencias globales de Node.js):
+
+### 1. Iniciar sesión en Cloudflare (una sola vez)
+```bash
+deno run --allow-env --allow-read --allow-write --allow-net --allow-run npm:wrangler login
+```
+
+### 2. Probar empaquetado en seco (Dry-Run)
+```bash
+deno task deploy:dry-run
+```
+
+### 3. Desplegar la aplicación a Cloudflare Workers (Static Assets)
+```bash
+deno task deploy
+```
+*Cloudflare subirá el directorio `public/` y te proporcionará una URL pública y segura (`https://simtele-risk.<tu-subdominio>.workers.dev`).*
+
+### 4. Alternativa: Desplegar en Cloudflare Pages
+```bash
+deno task deploy:pages
+```
+*Publica directamente en Cloudflare Pages (`https://simtele-risk.pages.dev`).*
+
+---
+
 ## Estructura limpia del repositorio
 
 ```text
-├── deno.json                         Configuración oficial de tareas de Deno (dev, start, test, db:status)
+├── deno.json                         Configuración oficial de tareas de Deno (dev, start, test, db:status, deploy)
+├── wrangler.json                     Configuración oficial de Cloudflare Workers (Static Assets)
 ├── server.js                         Servidor nativo Deno.serve + API REST SQLite
 ├── db/
 │   ├── schema.sql                    Script DDL relacional (6 tablas, llaves foráneas e índices)

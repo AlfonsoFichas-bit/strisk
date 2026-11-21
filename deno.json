@@ -1,8 +1,12 @@
 {
+  "nodeModulesDir": "auto",
   "tasks": {
     "start": "deno run --allow-net --allow-read --allow-write server.js",
     "dev": "deno run --allow-net --allow-read --allow-write --watch server.js",
     "test": "deno test --allow-read --allow-write",
-    "db:status": "deno run --allow-read --allow-write scripts/inspeccionar_db.js"
+    "db:status": "deno run --allow-read --allow-write scripts/inspeccionar_db.js",
+    "deploy": "deno run --allow-env --allow-read --allow-write --allow-net --allow-run npm:wrangler deploy",
+    "deploy:dry-run": "deno run --allow-env --allow-read --allow-write --allow-net --allow-run npm:wrangler deploy --dry-run",
+    "deploy:pages": "deno run --allow-env --allow-read --allow-write --allow-net --allow-run npm:wrangler pages deploy public --project-name simtele-risk"
   }
 }
