@@ -3,8 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>SIMTELE-RISK | Semana 1</title>
+  <title>SIMTELE-RISK | Semana 2 — Integración matemática y aplicación</title>
   <link rel="stylesheet" href="estilos.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header class="encabezado">
@@ -25,19 +26,78 @@
         <li>Quispe Chino Jose Luis</li>
         <li>Velasquez Gonzales Juan Pablo</li>
       </ol>
-      <p class="nota">Alcance de esta entrega: Semana 1. Los métodos de raíces, interpolación, integración y EDO se implementan en la Semana 2; aquí se plantean los modelos, la teoría de errores y los sistemas lineales.</p>
+      <p class="nota"><strong>Entrega Semana 2:</strong> Integración matemática completa de las 4 familias (EDO, Integración, Raíces, Interpolación), 12 escenarios ejecutables (3 por módulo: NORMAL, ESTRÉS, MAL CONDICIONADO), dos gráficos por caso, dos conclusiones diferenciadas (matemática y física) y persistencia relacional completa en base de datos SQLite con prueba de tolerancia.</p>
+    </section>
+
+    <!-- ============================ PANEL SEMANA 2 ============================ -->
+    <section class="panel" id="panel-semana2">
+      <div class="titulo-seccion">
+        <div>
+          <p class="etiqueta">SEMANA 2 · INTEGRACIÓN MATEMÁTICA Y APLICACIÓN</p>
+          <h2>Consola Numérica y Gráficos Interactivos</h2>
+        </div>
+        <div id="badge-simulacion-activa"></div>
+      </div>
+      <p>Simulador integral de los cuatro casos de estudio con todas las familias numéricas implementadas, cálculo transversal de errores (sin división por cero), dos gráficos interactivos por módulo y persistencia en SQLite.</p>
+
+      <div class="controles-s2 rejilla" style="grid-template-columns: 1fr 1fr auto auto; gap: 10px; align-items: end; margin: 15px 0;">
+        <label>Módulo / Caso de estudio
+          <select id="select-caso">
+            <option value="1">1. Detención de emergencia (EDO + Integración + Raíces)</option>
+            <option value="2">2. Deterioro mecánico (Raíces + Sistemas SPD GC)</option>
+            <option value="3">3. Oscilaciones por viento (EDO RK2/RK4 + Integración)</option>
+            <option value="4">4. Reconstrucción de sensores (Lagrange + Newton + Splines Cúbicos)</option>
+          </select>
+        </label>
+        <label>Escenario
+          <select id="select-escenario">
+            <option value="NORMAL">NORMAL (Referencia analítica nominal)</option>
+            <option value="ESTRES">ESTRÉS (Alta exigencia / Perturbación)</option>
+            <option value="MAL_CONDICIONADO">MAL CONDICIONADO (Sensibilidad / Runge / Stiff)</option>
+          </select>
+        </label>
+        <button class="boton" id="btn-ejecutar-s2" style="margin: 0;">Ejecutar Simulación</button>
+        <button class="boton secundario" id="btn-guardar-s2" style="margin: 0;">Guardar en Base de Datos</button>
+      </div>
+
+      <!-- Dos conclusiones claramente diferenciadas -->
+      <div class="grid-conclusiones">
+        <div class="panel-interno" style="border-left: 4px solid var(--azul2);">
+          <h4>Conclusión Matemática y Numérica</h4>
+          <p id="conclusion-matematica" style="font-size: 14px; margin: 0;"></p>
+        </div>
+        <div class="panel-interno" style="border-left: 4px solid var(--verde);">
+          <h4>Conclusión sobre el Problema Aplicado</h4>
+          <p id="conclusion-problema" style="font-size: 14px; margin: 0;"></p>
+        </div>
+      </div>
+      <p style="margin: 8px 0;"><small><strong>Referencia analítica / numérica:</strong> <span id="referencia-simulacion">—</span></small></p>
+
+      <!-- Dos gráficos obligatorios por módulo -->
+      <div class="grid-graficos">
+        <div class="panel-interno">
+          <canvas id="grafico-escenario" style="max-height: 320px;"></canvas>
+        </div>
+        <div class="panel-interno">
+          <canvas id="grafico-errores" style="max-height: 320px;"></canvas>
+        </div>
+      </div>
+
+      <!-- Tablas de iteraciones por método -->
+      <h3>Tablas de Iteraciones, Residuales y Errores por Método</h3>
+      <div id="contenedor-tablas-s2"></div>
     </section>
 
     <section>
       <div class="titulo-seccion">
         <div><p class="etiqueta">PANEL PRINCIPAL</p><h2>Cuatro casos de estudio</h2></div>
-        <span class="estado">Semana 1 · Modelos y primeros algoritmos</span>
+        <span class="estado">Semana 2 · Cobertura 4 × 3</span>
       </div>
       <div class="tarjetas">
-        <button class="tarjeta activa" data-modulo="detencion"><span class="numero">01</span><strong>Detención de emergencia</strong><small>Reacción, frenado y distancia disponible</small></button>
-        <button class="tarjeta" data-modulo="deterioro"><span class="numero">02</span><strong>Deterioro mecánico</strong><small>Umbral, sensibilidad y mantenimiento</small></button>
-        <button class="tarjeta" data-modulo="oscilaciones"><span class="numero">03</span><strong>Oscilaciones por viento</strong><small>Vibración libre, resonancia y amortiguamiento</small></button>
-        <button class="tarjeta" data-modulo="sensores"><span class="numero">04</span><strong>Reconstrucción de sensores</strong><small>Nodos, ruido y condicionamiento</small></button>
+        <button class="tarjeta activa" data-modulo="detencion"><span class="numero">01</span><strong>Detención de emergencia</strong><small>EDO (RK2/RK4), Integración y Raíces</small></button>
+        <button class="tarjeta" data-modulo="deterioro"><span class="numero">02</span><strong>Deterioro mecánico</strong><small>Raíces, Sistemas SPD y Mantenimiento</small></button>
+        <button class="tarjeta" data-modulo="oscilaciones"><span class="numero">03</span><strong>Oscilaciones por viento</strong><small>EDO (RK2/RK4), Resonancia e Integración</small></button>
+        <button class="tarjeta" data-modulo="sensores"><span class="numero">04</span><strong>Reconstrucción de sensores</strong><small>Lagrange, Newton, Splines y Runge</small></button>
       </div>
     </section>
 
@@ -65,7 +125,8 @@
         <label>Distancia disponible d_disponible (m)<input id="det-disponible" type="number" value="80" min="0.000001" step="any"></label>
       </div>
       <div class="acciones">
-        <button class="boton" id="calcular-detencion">Ejecutar escenario</button>
+        <button class="boton" id="calcular-detencion">Ejecutar escenario S1</button>
+        <button class="boton" id="btn-s2-mod1" style="background:#0284c7;">⚡ Simulación S2 (EDO RK2/RK4 + Integración + Raíces)</button>
         <button class="boton secundario" id="comparar-detencion">Comparar NORMAL / ESTRÉS / MAL</button>
       </div>
       <div class="resultado" id="resultado-detencion">Introduce los parámetros y ejecuta el escenario.</div>
@@ -174,7 +235,8 @@
         <label>Umbral D_umbral (índice)<input id="der-umbral" type="number" min="0" step="any"></label>
       </div>
       <div class="acciones">
-        <button class="boton" id="calcular-deterioro">Ejecutar escenario</button>
+        <button class="boton" id="calcular-deterioro">Ejecutar escenario S1</button>
+        <button class="boton" id="btn-s2-mod2" style="background:#0284c7;">⚡ Simulación S2 (Raíces + Sistemas SPD GC)</button>
         <button class="boton secundario" id="analizar-sensibilidad">Analizar sensibilidad</button>
         <button class="boton secundario" id="comparar-deterioro">Comparar los tres escenarios</button>
       </div>
@@ -272,16 +334,18 @@
         </select>
       </label>
       <div class="rejilla parametros">
-        <label>Masa m (kg)<input id="osc-m" type="number" value="1000" disabled></label>
-        <label>Amortiguamiento c (N·s/m)<input id="osc-c" type="number" value="500" disabled></label>
-        <label>Rigidez k (N/m)<input id="osc-k" type="number" value="20000" disabled></label>
-        <label>Fuerza F₀ (N)<input id="osc-f0" type="number" value="1000" disabled></label>
-        <label>Frecuencia ω (rad/s)<input id="osc-w" type="number" value="2" disabled></label>
-        <label>Posición inicial x₀ (m)<input id="osc-x0" type="number" value="0.05" disabled></label>
-        <label>Velocidad inicial v₀ (m/s)<input id="osc-v0" type="number" value="0" disabled></label>
+        <label>Masa m (kg)<input id="osc-m" type="number" value="1000"></label>
+        <label>Amortiguamiento c (N·s/m)<input id="osc-c" type="number" value="500"></label>
+        <label>Rigidez k (N/m)<input id="osc-k" type="number" value="20000"></label>
+        <label>Fuerza F₀ (N)<input id="osc-f0" type="number" value="1000"></label>
+        <label>Frecuencia ω (rad/s)<input id="osc-w" type="number" value="2"></label>
+        <label>Posición inicial x₀ (m)<input id="osc-x0" type="number" value="0.05"></label>
+        <label>Velocidad inicial v₀ (m/s)<input id="osc-v0" type="number" value="0"></label>
       </div>
-      <p class="nota">Los controles son de solo lectura en S1 porque la simulación RK2/RK4 y la integración corresponden a S2. La referencia analítica y la sensibilidad de la amplitud ya se calculan aquí.</p>
-      <button class="boton" id="calcular-oscilaciones">Calcular referencia analítica</button>
+      <div class="acciones">
+        <button class="boton" id="calcular-oscilaciones">Calcular referencia analítica</button>
+        <button class="boton" id="btn-s2-mod3" style="background:#0284c7;">⚡ Simulación S2 (EDO RK2/RK4 + Integración de Energía)</button>
+      </div>
 
       <h3>Ficha del modelo</h3>
       <div class="rejilla dos">
@@ -354,7 +418,10 @@
       </label>
       <div id="tabla-sensores-contenedor"></div>
       <div id="condicion-sensores"></div>
-      <button class="boton" id="calcular-sensores">Analizar escenarios y condicionamiento</button>
+      <div class="acciones">
+        <button class="boton" id="calcular-sensores">Analizar escenarios y condicionamiento</button>
+        <button class="boton" id="btn-s2-mod4" style="background:#0284c7;">⚡ Simulación S2 (Lagrange + Newton + Splines + Runge)</button>
+      </div>
 
       <h3>Ficha del modelo</h3>
       <div class="rejilla dos">
@@ -511,7 +578,7 @@
         <div class="entidad"><strong>RESULTADO_RESUMEN</strong><span>PK id</span><span>FK ejecucion_id</span><span>referencia, valor_json</span><span>metrica_error_json, interpretacion</span></div>
       </div>
 
-      <h3>Modelo relacional inicial</h3>
+      <h3>Modelo relacional — SQLite (db/schema.sql)</h3>
       <div class="tabla-contenedor"><table>
         <thead><tr><th>Tabla</th><th>PK</th><th>FK</th><th>Campos principales</th></tr></thead>
         <tbody>
@@ -523,36 +590,66 @@
           <tr><td>resultado_resumen</td><td>id</td><td>ejecucion_id → ejecucion_metodo.id</td><td>referencia, valor_json, metrica_error_json, interpretacion</td></tr>
         </tbody>
       </table></div>
-      <p class="nota">DER y modelo relacional inicial de S1. El script SQL o las migraciones y la persistencia en base de datos se incorporan en S2/S3; el historial actual usa <code>localStorage</code> como demostración.</p>
+      <p class="nota">Base de datos SQLite activa en <code>db/simtele.db</code> con integridad referencial (<code>ON DELETE CASCADE</code>) e índices de búsqueda rápida por fecha y escenario. Documentación y diagrama en <a href="docs/bd/der.md" target="_blank">docs/bd/der.md</a>.</p>
     </section>
 
     <!-- ============================ HISTORIAL ============================ -->
     <section class="panel" id="historial-general">
-      <p class="etiqueta">HISTORIAL DE EXPERIMENTOS</p>
-      <h2>Persistencia local de S1</h2>
-      <p>Se guardan ejecuciones completas en el almacenamiento local del navegador. Al recargar la página, los registros permanecen y pueden recuperarse para repetir el cálculo. Esto demuestra el flujo de guardado/recuperación; la base de datos relacional se implementa en S2/S3.</p>
+      <div class="titulo-seccion">
+        <div>
+          <p class="etiqueta">HISTORIAL DE EXPERIMENTOS Y PERSISTENCIA SQLITE</p>
+          <h2>Simulaciones Guardadas y Verificación de Tolerancia</h2>
+        </div>
+        <button class="boton secundario" id="btn-cargar-historial">Actualizar Historial</button>
+      </div>
+      <p>Prueba obligatoria de reproducibilidad de la Semana 2: guarda ejecuciones completas en la base de datos relacional SQLite (servidor <code>server.js</code>). Al presionar <strong>«Recuperar y Verificar»</strong>, se cargan los parámetros guardados, se repite el cálculo desde cero y se demuestra coincidencia estricta dentro de la tolerancia (≤ 10⁻⁹).</p>
+
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Caso / Módulo</th>
+              <th>Escenario</th>
+              <th>Fecha</th>
+              <th>Estado</th>
+              <th>Acción de Reproducibilidad</th>
+            </tr>
+          </thead>
+          <tbody id="tbody-historial">
+            <tr><td colspan="6">Cargando registros del servidor SQLite...</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h3>Respaldos rápidos locales de S1</h3>
       <div class="rejilla dos">
         <div class="panel-interno">
-          <h3>Sistemas lineales</h3>
+          <h4>Sistemas lineales</h4>
           <div id="historial-sistemas" class="resultado">Todavía no hay ejecuciones de sistemas lineales guardadas.</div>
           <button class="boton secundario" id="limpiar-historial-sistemas">Limpiar historial de sistemas</button>
         </div>
         <div class="panel-interno">
-          <h3>Deterioro mecánico</h3>
+          <h4>Deterioro mecánico</h4>
           <button class="boton secundario" id="guardar-historial">Guardar último resultado de deterioro</button>
           <div id="historial" class="resultado">Todavía no hay registros de deterioro guardados.</div>
           <button class="boton secundario" id="limpiar-historial-deterioro">Limpiar historial de deterioro</button>
         </div>
       </div>
-      <p class="nota">Los registros se guardan con fecha, parámetros, método, tolerancia, iteraciones y errores disponibles. El historial no depende solo de variables en memoria: se recupera después de recargar.</p>
     </section>
 
     <footer>
-      <p><strong>SIMTELE-RISK</strong> · Semana 1 · Métodos Numéricos</p>
+      <p><strong>SIMTELE-RISK</strong> · Semana 2 · Métodos Numéricos</p>
       <p>Participantes: Choque Sillo Ronald · Limachi Mamani Ronal · Quispe Chino Jose Luis · Velasquez Gonzales Juan Pablo</p>
-      <p>Todos los parámetros de simulación son supuestos académicos y no describen fallas reales. El informe de la Semana 1 se desarrolla aparte en LaTeX.</p>
+      <p>Todos los parámetros de simulación son supuestos académicos y no describen fallas reales.</p>
     </footer>
   </main>
   <script src="principal.js"></script>
+  <script type="module">
+    import { inicializarPanelSemana2 } from "./js/ui-semana2.js";
+    window.addEventListener("DOMContentLoaded", () => {
+      inicializarPanelSemana2();
+    });
+  </script>
 </body>
 </html>
